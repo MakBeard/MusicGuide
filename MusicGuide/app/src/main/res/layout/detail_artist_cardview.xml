@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <ImageView
+            android:id="@+id/smallcover_imageview"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:paddingLeft="@dimen/cardview_text_padding"
+            android:layout_toRightOf="@id/smallcover_imageview"
+            android:layout_alignTop="@id/smallcover_imageview"
+            android:text="NAME"/>
+
+        <TextView
+            android:id="@+id/genres_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/cardview_text_padding"
+            android:layout_toRightOf="@id/smallcover_imageview"
+            android:layout_below="@id/name_textview"
+            android:text="GENRES"/>
+
+        <TextView
+            android:id="@+id/tracks_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/cardview_text_padding"
+            android:layout_toRightOf="@id/smallcover_imageview"
+            android:layout_alignBottom="@id/smallcover_imageview"
+            android:text="TRACKS"/>
+
+        <TextView
+            android:id="@+id/albums_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tracks_textview"
+            android:layout_alignBottom="@id/smallcover_imageview"
+            android:text="ALBUMS"/>
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

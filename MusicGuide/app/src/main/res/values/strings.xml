@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MusicGuide</string>
+    <string name="singers">Исполнители</string>
+    <string name="biography">Биография</string>
+</resources>
