@@ -9,21 +9,21 @@ import android.util.Log;
  */
 public class MyPreferences {
     private static final String TAG = "MyPreferences";
-    private static MyPreferences ourInstance;
-    private final SharedPreferences prefs;
-    private static final String PREFS_NAME = "PREFS_NAME";
+    private static MyPreferences mOurInstance;
+    private final SharedPreferences mSharedPreferences;
+    public static final String PREF_DB_UPLOADED = "PREF_DB_UPLOADED";
+    public static final String DB_UPLOADED = "DB_UPLOADED";
 
     public static MyPreferences getInstance(Context context) {
-        if (ourInstance == null) {
-            ourInstance = new MyPreferences(context);
+        if (mOurInstance == null) {
+            mOurInstance = new MyPreferences(context);
         }
-        return ourInstance;
+        return mOurInstance;
     }
 
     private MyPreferences(Context context) {
-        prefs = context.getSharedPreferences(PREFS_NAME, 0);
-
-        prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+        mSharedPreferences = context.getSharedPreferences(PREF_DB_UPLOADED, 0);
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 Log.d(TAG, "onSharedPreferenceChanged: " + key);
@@ -31,13 +31,12 @@ public class MyPreferences {
         });
     }
 
-    public static final String FIELD_KEY = "FIELD_KEY";
 
     public void setField(String field) {
-        prefs.edit().putString(FIELD_KEY, field).commit();
+        mSharedPreferences.edit().putString(DB_UPLOADED, field).commit();
     }
 
     public String getField() {
-        return prefs.getString(FIELD_KEY, "");
+        return mSharedPreferences.getString(DB_UPLOADED, "");
     }
 }

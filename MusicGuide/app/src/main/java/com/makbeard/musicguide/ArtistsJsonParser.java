@@ -2,12 +2,14 @@ package com.makbeard.musicguide;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.makbeard.musicguide.model.Artist;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -24,7 +26,6 @@ public class ArtistsJsonParser {
 
     private static final String TAG = "ArtistsJsonParser";
     private Context mContext;
-    private SharedPreferences mSharedPreferences;
 
     public ArtistsJsonParser(Context context) {
         mContext = context;
@@ -49,23 +50,42 @@ public class ArtistsJsonParser {
     /**
      * Метод возвращает список артистов
      */
-    public void getArtistsList() {
+    public List<Artist> getArtistsList() {
 
         //Запускаем обработку JSON в отдельном потоке
         Call<List<Artist>> call = yandexArtistApi.getArtistsList();
+        try {
+            final Response<List<Artist>> response = call.execute();
+            if (response.isSuccessful()) {
+                //Запускаем сохранение в БД в отдельном потоке
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ArtistDatabaseHelper artistDatabaseHelper =
+                                ArtistDatabaseHelper.getInstance(mContext);
+                        artistDatabaseHelper.insertArtists(response.body());
+                    }
+                }).start();
+                return response.body();
+            }
+        } catch (IOException e) {
+            // TODO: 22.04.2016 Обработать IOException
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+        // TODO: 22.04.2016 Переделать на синхронный вызов
+        /*
         call.enqueue(new Callback<List<Artist>>() {
             @Override
             public void onResponse(Call<List<Artist>> call, Response<List<Artist>> response) {
                if (response.isSuccessful()) {
+                   // TODO: 22.04.2016 Передаём в UI thread List
+                   //Сохраняем в полученный List в БД
                    ArtistDatabaseHelper artistDatabaseHelper =
                            ArtistDatabaseHelper.getInstance(mContext);
                    artistDatabaseHelper.insertArtists(response.body());
-/*
-                   SharedPreferences sharedPreferences = mContext.getSharedPreferences(App.PREF_DB_UPLOADED, Context.MODE_PRIVATE);
-                   SharedPreferences.Editor editor = sharedPreferences.edit();
-                   editor.putBoolean(App.DB_UPLOADED, true);
-                   editor.apply();
-               */
                }
             }
 
@@ -74,5 +94,6 @@ public class ArtistsJsonParser {
             // TODO: 20.04.2016 Обработать ошибку
             }
         });
-    }
+        */
+
 }

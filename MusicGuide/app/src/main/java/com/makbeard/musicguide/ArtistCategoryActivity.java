@@ -1,8 +1,10 @@
 package com.makbeard.musicguide;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,6 +17,7 @@ import com.makbeard.musicguide.model.Artist;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Стартовая Activity категорий,
@@ -23,28 +26,12 @@ import java.util.List;
 public class ArtistCategoryActivity extends AppCompatActivity {
 
     private static final String TAG = "ArtistCategoryActivity";
-    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_category);
 
-        mSharedPreferences = getSharedPreferences(App.PREF_DB_UPLOADED, MODE_PRIVATE);
-        mSharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.d(TAG, "onSharedPreferenceChanged: KEY " + key);
-            }
-        });
-        /*
-        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                Log.d(TAG, "onSharedPreferenceChanged: KEY" + key);
-            }
-        };
-        mSharedPreferences.registerOnSharedPreferenceChangeListener(listener);
-        */
         ArtistDatabaseHelper artistDatabaseHelper = ArtistDatabaseHelper.getInstance(this);
         Cursor cursor = artistDatabaseHelper.fullDataQuery();
 
@@ -52,15 +39,21 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
         //Если cursor.moveToFirst() true, обрабатываем данные из Db. Иначе заполняем Db
         if (cursor.moveToFirst()) {
-
+            Log.d(TAG, "onCreate: берём данные из базы");
             artistList.addAll(artistDatabaseHelper.getArtistsListFromDb());
-
         } else {
-            ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser(this);
-            artistsJsonParser.getArtistsList();
-            //SharedPreferencesListener перехватывает результат artistsJsonParser.getArtistsList()
-            //И передаёт в курсор
+            // TODO: 22.04.2016 Проверка на наличие интернета в случае пустой ДБ
+            Log.d(TAG, "onCreate: берём данные из парсера");
+            DataLoadingAsyncTask dataLoadingAsyncTask = new DataLoadingAsyncTask(this);
+            try {
+                artistList.addAll(dataLoadingAsyncTask.execute().get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
         ArtistRecyclerViewAdapter artistRecyclerViewAdapter =
                 new ArtistRecyclerViewAdapter(this, artistList);
@@ -88,6 +81,26 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(linearLayoutManager);
         } else {
             Log.e(TAG, "onCreate: RECYCLER == NULL!!!");
+        }
+    }
+
+    private class DataLoadingAsyncTask extends AsyncTask<Void, Integer, List<Artist>> {
+
+        private Context mContext;
+
+        public DataLoadingAsyncTask(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected List<Artist> doInBackground(Void... params) {
+            ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser(mContext);
+            return artistsJsonParser.getArtistsList();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
         }
     }
 }
