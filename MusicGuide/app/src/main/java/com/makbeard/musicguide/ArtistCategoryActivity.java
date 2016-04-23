@@ -4,20 +4,40 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.PathInterpolator;
 import android.widget.Toast;
 
+import com.fondesa.recyclerviewdivider.RecyclerViewDivider;
 import com.makbeard.musicguide.model.Artist;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.AnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 /**
  * Стартовая Activity категорий,
@@ -57,9 +77,11 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
-        ArtistRecyclerViewAdapter artistRecyclerViewAdapter =
+        //Создаём свой Adapter для RecyclerView
+        ArtistRecyclerViewAdapter dataAdapter =
                 new ArtistRecyclerViewAdapter(this, artistList);
-        artistRecyclerViewAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
+
+        dataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
             @Override
             public void onClick(int position) {
                 Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
@@ -75,11 +97,24 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
+        //Создаём divider
+        RecyclerViewDivider divider = new RecyclerViewDivider(
+                getResources().getColor(R.color.colorMaterialGrey), 1);
+
         if (recyclerView != null) {
-            // TODO: 22.04.2016 Настроить анимацию
-            RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-            recyclerView.setItemAnimator(itemAnimator);
-            recyclerView.setAdapter(artistRecyclerViewAdapter);
+
+            recyclerView.addItemDecoration(divider);
+            //Добавляем анимацию появления элемента
+            recyclerView.setItemAnimator(new FadeInAnimator());
+
+            //Задаём анимацию для адаптера
+            ScaleInAnimationAdapter animationAdapter =
+                    new ScaleInAnimationAdapter(dataAdapter);
+
+            animationAdapter.setInterpolator(new FastOutLinearInInterpolator());
+            animationAdapter.setDuration(500);
+
+            recyclerView.setAdapter(animationAdapter);
             recyclerView.setLayoutManager(linearLayoutManager);
         } else {
             Log.e(TAG, "onCreate: RECYCLER == NULL!!!");
