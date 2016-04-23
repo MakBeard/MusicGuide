@@ -3,10 +3,6 @@ package com.makbeard.musicguide;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
-import android.view.Surface;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,8 +22,8 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
         String artistName = intent.getStringExtra(Artist.NAME);
         String artistGenres = intent.getStringExtra(Artist.GENRES);
-        String artistTracks = intent.getStringExtra(Artist.TRACKS);
-        String artistAlbums = intent.getStringExtra(Artist.ALBUMS);
+        int artistTracks = intent.getIntExtra(Artist.TRACKS, 0);
+        int artistAlbums = intent.getIntExtra(Artist.ALBUMS, 0);
         String artistDescription = intent.getStringExtra(Artist.DESCRIPTION);
         String artistBigCover = intent.getStringExtra(Artist.BIGCOVER);
 
@@ -36,13 +32,13 @@ public class ArtistDetailActivity extends AppCompatActivity {
         TextView genresTextView = (TextView) findViewById(R.id.genres_detail_tetview);
         genresTextView.setText(artistGenres);
 
-        // TODO: 22.04.2016  Убрать строку " альбомов"
         TextView albumsTextView = (TextView) findViewById(R.id.albums_detail_textview);
-        albumsTextView.setText(artistAlbums + " альбомов, ");
+        albumsTextView.setText(FormatStringHelper.getFormattedAlbums(artistAlbums));
 
-        // TODO: 22.04.2016 Убрать строку " треков, "
+        //"\u00B7"
+
         TextView tracksTextView = (TextView) findViewById(R.id.tracks_detail_textview);
-        tracksTextView.setText(artistTracks + " треков");
+        tracksTextView.setText(FormatStringHelper.getFormattedTracks(artistTracks));
 
 
         TextView descriptionTextView = (TextView) findViewById(R.id.description_detail_textview);

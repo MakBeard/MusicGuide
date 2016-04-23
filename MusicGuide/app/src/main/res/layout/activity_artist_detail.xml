@@ -22,7 +22,7 @@
             android:id="@+id/genres_detail_tetview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
             android:layout_below="@id/bigcover_imageview"
             android:text="GENRES"/>
 
@@ -30,24 +30,33 @@
             android:id="@+id/albums_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
             android:layout_below="@id/genres_detail_tetview"
             android:text="ALBUMS"/>
+
+        <TextView
+            android:id="@+id/dot_detail_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/text_padding"
+            android:layout_toRightOf="@id/albums_detail_textview"
+            android:layout_alignTop="@id/albums_detail_textview"
+            android:text="\u00B7"/>
 
         <TextView
             android:id="@+id/tracks_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
             android:layout_alignTop="@id/albums_detail_textview"
-            android:layout_toRightOf="@id/albums_detail_textview"
+            android:layout_toRightOf="@id/dot_detail_textview"
             android:text="TRACKS"/>
 
         <TextView
             android:id="@+id/biography_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
             android:layout_below="@id/albums_detail_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:text="@string/biography"/>
@@ -56,7 +65,8 @@
             android:id="@+id/description_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
             android:layout_below="@id/biography_title_textview"
             android:text="DETAIL"/>
 

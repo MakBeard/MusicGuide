@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
             android:layout_toRightOf="@id/smallcover_imageview"
             android:layout_alignTop="@id/smallcover_imageview"
             android:text="NAME"/>
@@ -30,27 +30,27 @@
             android:id="@+id/genres_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
+            android:paddingLeft="@dimen/text_padding"
             android:layout_toRightOf="@id/smallcover_imageview"
             android:layout_below="@id/name_textview"
             android:text="GENRES"/>
 
         <TextView
-            android:id="@+id/tracks_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding_left"
-            android:layout_toRightOf="@id/smallcover_imageview"
-            android:layout_alignBottom="@id/smallcover_imageview"
-            android:text="TRACKS"/>
-
-        <TextView
             android:id="@+id/albums_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tracks_textview"
+            android:paddingLeft="@dimen/text_padding"
+            android:layout_toRightOf="@id/smallcover_imageview"
             android:layout_alignBottom="@id/smallcover_imageview"
             android:text="ALBUMS"/>
+
+        <TextView
+            android:id="@+id/tracks_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/albums_textview"
+            android:layout_alignBottom="@id/smallcover_imageview"
+            android:text="TRACKS"/>
 
 
     </RelativeLayout>

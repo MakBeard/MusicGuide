@@ -3,7 +3,6 @@ package com.makbeard.musicguide;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.makbeard.musicguide.model.Artist;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +56,14 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         TextView genresTextView = (TextView) cardView.findViewById(R.id.genres_textview);
         genresTextView.setText(mArtistList.get(position).getGenresAsString());
 
-        TextView tracksTextView = (TextView) cardView.findViewById(R.id.tracks_textview);
-        tracksTextView.setText(mArtistList.get(position).getTracks() + " альбомов, ");
-
         TextView albumsTextView = (TextView) cardView.findViewById(R.id.albums_textview);
-        albumsTextView.setText(mArtistList.get(position).getAlbums() + " песен");
+        albumsTextView.setText(FormatStringHelper.getFormattedAlbums(
+                mArtistList.get(position).getAlbums()) + ", ");
+
+        TextView tracksTextView = (TextView) cardView.findViewById(R.id.tracks_textview);
+        tracksTextView.setText(FormatStringHelper.getFormattedTracks(
+                        mArtistList.get(position).getTracks()));
+
 
         ImageView smallCoverImageView =
                 (ImageView) cardView.findViewById(R.id.smallcover_imageview);

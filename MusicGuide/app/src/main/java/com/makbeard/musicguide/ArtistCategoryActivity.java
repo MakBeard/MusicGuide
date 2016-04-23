@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
@@ -57,22 +59,33 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
         final List<Artist> artistList = new ArrayList<>();
 
-        //Если cursor.moveToFirst() true, обрабатываем данные из Db. Иначе заполняем Db
+        //Если cursor.moveToFirst() true, обрабатываем данные из БД. Иначе заполняем БД
         if (cursor.moveToFirst()) {
             Log.d(TAG, "onCreate: берём данные из базы");
+            //Если в БД есть данные, заполняем ими artistList
             artistList.addAll(artistDatabaseHelper.getArtistsListFromDb());
         } else {
-            // TODO: 22.04.2016 Проверка на наличие интернета в случае пустой ДБ
-            Log.d(TAG, "onCreate: берём данные из парсера");
-            DataLoadingAsyncTask dataLoadingAsyncTask = new DataLoadingAsyncTask(this);
-            try {
-                // TODO: 23.04.2016 Переделать ожидание возварщениея
-                //Попробовать вынести из метода OnCreate в OnStart
-                artistList.addAll(dataLoadingAsyncTask.execute().get());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            //Если база пустая
+
+            if (isOnline()) {
+                //Если есть интернет
+
+                Log.d(TAG, "onCreate: берём данные из парсера");
+                // TODO: 23.04.2016 Обработать медленный интернет
+                DataLoadingAsyncTask dataLoadingAsyncTask = new DataLoadingAsyncTask(this);
+                try {
+                    // TODO: 23.04.2016 Переделать ожидание возварщениея
+                    //Попробовать вынести из метода OnCreate в OnStart
+                    artistList.addAll(dataLoadingAsyncTask.execute().get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // TODO: 23.04.2016 Обработать отсутствие интернета
+                Toast.makeText(this, "Для заполнения БД нужен интернет...", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onCreate: Нет инета");
             }
         }
 
@@ -87,8 +100,8 @@ public class ArtistCategoryActivity extends AppCompatActivity {
                 Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
                 intent.putExtra(Artist.NAME, artistList.get(position).getName());
                 intent.putExtra(Artist.GENRES, artistList.get(position).getGenresAsString());
-                intent.putExtra(Artist.ALBUMS, artistList.get(position).getFormattedAlbums());
-                intent.putExtra(Artist.TRACKS, artistList.get(position).getFormattedTracks());
+                intent.putExtra(Artist.ALBUMS, artistList.get(position).getAlbums());
+                intent.putExtra(Artist.TRACKS, artistList.get(position).getTracks());
                 intent.putExtra(Artist.DESCRIPTION, artistList.get(position).getDescription());
                 intent.putExtra(Artist.BIGCOVER, artistList.get(position).getBigCover());
                 startActivity(intent);
@@ -119,6 +132,18 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, "onCreate: RECYCLER == NULL!!!");
         }
+
+    }
+
+    /**
+     * Метод проверяет наличие соединения с интернетом
+     * @return true если есть подключение, иначе false
+     */
+    private boolean isOnline() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
     /**
