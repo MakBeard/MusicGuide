@@ -46,6 +46,8 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: берём данные из парсера");
             DataLoadingAsyncTask dataLoadingAsyncTask = new DataLoadingAsyncTask(this);
             try {
+                // TODO: 23.04.2016 Переделать ожидание возварщениея
+                //Попробовать вынести из метода OnCreate в OnStart
                 artistList.addAll(dataLoadingAsyncTask.execute().get());
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -84,6 +86,9 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Класс для вызова загрузки данных в отдельном потоке
+     */
     private class DataLoadingAsyncTask extends AsyncTask<Void, Integer, List<Artist>> {
 
         private Context mContext;

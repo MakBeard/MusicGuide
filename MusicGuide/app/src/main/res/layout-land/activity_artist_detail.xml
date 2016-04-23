@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<HorizontalScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         tools:context="com.makbeard.musicguide.ArtistDetailActivity">
 
         <ImageView
             android:id="@+id/bigcover_imageview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_224_1000"/>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/placehoder_224_300" />
 
         <TextView
             android:id="@+id/genres_detail_tetview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/text_padding_left"
-            android:layout_below="@id/bigcover_imageview"
+            android:layout_toRightOf="@id/bigcover_imageview"
             android:text="GENRES"/>
 
         <TextView
@@ -31,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/text_padding_left"
+            android:layout_toRightOf="@id/bigcover_imageview"
             android:layout_below="@id/genres_detail_tetview"
             android:text="ALBUMS"/>
 
@@ -48,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/text_padding_left"
+            android:layout_toRightOf="@id/bigcover_imageview"
             android:layout_below="@id/albums_detail_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:text="@string/biography"/>
@@ -57,8 +60,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/text_padding_left"
+            android:layout_alignParentBottom="true"
+            android:maxWidth="400dp"
+            android:layout_toRightOf="@id/bigcover_imageview"
             android:layout_below="@id/biography_title_textview"
             android:text="DETAIL"/>
 
     </RelativeLayout>
-</ScrollView>
+</HorizontalScrollView>

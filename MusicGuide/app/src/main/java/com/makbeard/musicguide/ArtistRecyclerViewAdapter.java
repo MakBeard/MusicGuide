@@ -64,14 +64,14 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         TextView albumsTextView = (TextView) cardView.findViewById(R.id.albums_textview);
         albumsTextView.setText(mArtistList.get(position).getAlbums() + " песен");
 
-        // TODO: 22.04.2016 Изменить место вызова сохранения
         ImageView smallCoverImageView =
                 (ImageView) cardView.findViewById(R.id.smallcover_imageview);
 
         Glide
-            .with(mContext)
-            .load(mArtistList.get(position).getSmallCover())
-            .into(smallCoverImageView);
+                .with(mContext)
+                .load(mArtistList.get(position).getSmallCover())
+                .placeholder(R.drawable.placehoder_224_300)
+                .into(smallCoverImageView);
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override

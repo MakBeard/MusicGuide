@@ -3,6 +3,10 @@ package com.makbeard.musicguide;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +43,7 @@ public class ArtistDetailActivity extends AppCompatActivity {
         // TODO: 22.04.2016 Убрать строку " треков, "
         TextView tracksTextView = (TextView) findViewById(R.id.tracks_detail_textview);
         tracksTextView.setText(artistTracks + " треков");
+
 
         TextView descriptionTextView = (TextView) findViewById(R.id.description_detail_textview);
         descriptionTextView.setText(artistDescription);

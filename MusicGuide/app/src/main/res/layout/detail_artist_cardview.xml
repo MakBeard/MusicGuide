@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:paddingLeft="@dimen/cardview_text_padding"
+            android:paddingLeft="@dimen/text_padding_left"
             android:layout_toRightOf="@id/smallcover_imageview"
             android:layout_alignTop="@id/smallcover_imageview"
             android:text="NAME"/>
@@ -30,7 +30,7 @@
             android:id="@+id/genres_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/cardview_text_padding"
+            android:paddingLeft="@dimen/text_padding_left"
             android:layout_toRightOf="@id/smallcover_imageview"
             android:layout_below="@id/name_textview"
             android:text="GENRES"/>
@@ -39,7 +39,7 @@
             android:id="@+id/tracks_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/cardview_text_padding"
+            android:paddingLeft="@dimen/text_padding_left"
             android:layout_toRightOf="@id/smallcover_imageview"
             android:layout_alignBottom="@id/smallcover_imageview"
             android:text="TRACKS"/>
