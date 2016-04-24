@@ -1,4 +1,4 @@
-package com.makbeard.musicguide;
+package com.makbeard.musicguide.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.makbeard.musicguide.model.Artist;
+import com.makbeard.musicguide.FormatStringHelper;
+import com.makbeard.musicguide.R;
+import com.makbeard.musicguide.model.ArtistModel;
 
 public class ArtistDetailActivity extends AppCompatActivity {
 
@@ -20,12 +22,12 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        String artistName = intent.getStringExtra(Artist.NAME);
-        String artistGenres = intent.getStringExtra(Artist.GENRES);
-        int artistTracks = intent.getIntExtra(Artist.TRACKS, 0);
-        int artistAlbums = intent.getIntExtra(Artist.ALBUMS, 0);
-        String artistDescription = intent.getStringExtra(Artist.DESCRIPTION);
-        String artistBigCover = intent.getStringExtra(Artist.BIGCOVER);
+        String artistName = intent.getStringExtra(ArtistModel.NAME);
+        String artistGenres = intent.getStringExtra(ArtistModel.GENRES);
+        int artistTracks = intent.getIntExtra(ArtistModel.TRACKS, 0);
+        int artistAlbums = intent.getIntExtra(ArtistModel.ALBUMS, 0);
+        String artistDescription = intent.getStringExtra(ArtistModel.DESCRIPTION);
+        String artistBigCover = intent.getStringExtra(ArtistModel.BIGCOVER);
 
         setTitle(artistName);
 

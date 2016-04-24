@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Класс-модель, соответствущий структуре JSON
  */
-public class Artist {
+public class ArtistModel {
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
     public static final String GENRES = "genres";
@@ -62,8 +62,19 @@ public class Artist {
         }
     }
 
-    public Artist(String name, String id, List<String> genres, int tracks,
-                  int albums, String link, String description, Cover cover) {
+    /**
+     * Конструктор для правильной работы Retrofit
+     * @param name
+     * @param id
+     * @param genres
+     * @param tracks
+     * @param albums
+     * @param link
+     * @param description
+     * @param cover
+     */
+    public ArtistModel(String name, String id, List<String> genres, int tracks,
+                       int albums, String link, String description, Cover cover) {
         this.mName = name;
         this.mId = id;
         this.mGenres = genres;
@@ -74,8 +85,20 @@ public class Artist {
         this.mCover = cover;
     }
 
-    public Artist(String name, String id, String genres, int tracks, int albums,
-                  String link, String description, String coverSmall, String coverBig) {
+    /**
+     * Конструткор
+     * @param name
+     * @param id
+     * @param genres
+     * @param tracks
+     * @param albums
+     * @param link
+     * @param description
+     * @param coverSmall
+     * @param coverBig
+     */
+    public ArtistModel(String name, String id, String genres, int tracks, int albums,
+                       String link, String description, String coverSmall, String coverBig) {
         mName = name;
         mId = id;
         mGenres = new ArrayList<>();
@@ -95,7 +118,6 @@ public class Artist {
         return mId;
     }
 
-    // TODO: 21.04.2016 Изменить возврат на String
     public List<String> getGenres() {
         return mGenres;
     }
@@ -115,18 +137,8 @@ public class Artist {
         return mTracks;
     }
 
-    // TODO: 22.04.2016 Сделать формирование окончания (треков, трек)
-    public String getFormattedTracks() {
-        return Integer.toString(mTracks);
-    }
-
-    // TODO: 22.04.2016 Сделать формирование окончания (альбом, альбомов)
     public int getAlbums() {
         return mAlbums;
-    }
-
-    public String getFormattedAlbums() {
-        return Integer.toString(mAlbums);
     }
 
     public String getLink() {

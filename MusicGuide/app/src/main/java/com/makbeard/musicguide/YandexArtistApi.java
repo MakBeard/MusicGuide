@@ -1,6 +1,6 @@
 package com.makbeard.musicguide;
 
-import com.makbeard.musicguide.model.Artist;
+import com.makbeard.musicguide.model.ArtistModel;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ import retrofit2.http.GET;
 
 public interface YandexArtistApi {
     @GET("artists.json")
-    Call<List <Artist>> getArtistsList();
+    Call<List <ArtistModel>> getArtistsList();
 }

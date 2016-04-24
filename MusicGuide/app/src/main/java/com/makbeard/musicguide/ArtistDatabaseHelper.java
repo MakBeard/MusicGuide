@@ -7,11 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.makbeard.musicguide.model.Artist;
+import com.makbeard.musicguide.model.ArtistModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Класс-помощник для доступа к SQLite базе
@@ -74,10 +73,10 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Метод для получения списка объектов из Db
-     * @return список классов Artist
+     * @return список классов ArtistModel
      */
-    public List<Artist> getArtistsListFromDb() {
-        List<Artist> artistsList = new ArrayList<>();
+    public List<ArtistModel> getArtistsListFromDb() {
+        List<ArtistModel> artistsList = new ArrayList<>();
         Cursor cursor = fullDataQuery();
 
         int nameIdx =        cursor.getColumnIndex(KEY_NAME);
@@ -103,7 +102,7 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
                 String smallCover = cursor.getString(smallCoverIdx);
                 String bigCover = cursor.getString(bigCiverIdx);
 
-                artistsList.add(new Artist(name, jsonId, genres,
+                artistsList.add(new ArtistModel(name, jsonId, genres,
                         tracks, albums, link,
                         description, smallCover, bigCover));
 
@@ -131,35 +130,35 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Метод записывает полученный в JSON список артистов в БД
-     * @param artistList массив Artist
+     * @param artistModelList массив ArtistModel
      */
-    public void insertArtists(List<Artist> artistList) {
+    public void insertArtists(List<ArtistModel> artistModelList) {
         SQLiteDatabase db = getWritableDatabase();
 
         try {
             db.beginTransaction();
 
-            for (Artist artist : artistList) {
+            for (ArtistModel artistModel : artistModelList) {
                 ContentValues cv = new ContentValues();
-                cv.put(KEY_JSONID, artist.getId());
-                cv.put(KEY_NAME, artist.getName());
-                cv.put(KEY_TRACKS, artist.getTracks());
-                cv.put(KEY_ALBUMS, artist.getAlbums());
-                cv.put(KEY_DESCRIPTION, artist.getDescription());
-                cv.put(KEY_LINK, artist.getLink());
-                cv.put(KEY_SMALLCOVER, artist.getSmallCover());
-                cv.put(KEY_BIGCOVER, artist.getBigCover());
+                cv.put(KEY_JSONID, artistModel.getId());
+                cv.put(KEY_NAME, artistModel.getName());
+                cv.put(KEY_TRACKS, artistModel.getTracks());
+                cv.put(KEY_ALBUMS, artistModel.getAlbums());
+                cv.put(KEY_DESCRIPTION, artistModel.getDescription());
+                cv.put(KEY_LINK, artistModel.getLink());
+                cv.put(KEY_SMALLCOVER, artistModel.getSmallCover());
+                cv.put(KEY_BIGCOVER, artistModel.getBigCover());
 
                 StringBuilder genresSb = new StringBuilder();
-                for (int i = 0; i < artist.getGenres().size(); i++) {
-                    genresSb.append(artist.getGenres().get(i));
-                    if (i < artist.getGenres().size() - 1) {
+                for (int i = 0; i < artistModel.getGenres().size(); i++) {
+                    genresSb.append(artistModel.getGenres().get(i));
+                    if (i < artistModel.getGenres().size() - 1) {
                         genresSb.append(", ");
                     }
                 }
 
                 cv.put(KEY_GENRES, genresSb.toString());
-                //Log.d(TAG, "insertArtists: " + artist.getName());
+                //Log.d(TAG, "insertArtists: " + artistModel.getName());
                 db.insert(ARTISTS_TABLE, null, cv);
             }
             db.setTransactionSuccessful();

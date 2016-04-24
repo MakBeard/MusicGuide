@@ -3,7 +3,6 @@ package com.makbeard.musicguide;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +10,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.makbeard.musicguide.model.Artist;
+import com.makbeard.musicguide.model.ArtistModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Dmitry on 21.04.2016.
+ * Класс описывающий адаптера для RecyclerView
  */
 public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "RVAdapter" ;
-    private List<Artist> mArtistList = new ArrayList<>();
+    private List<ArtistModel> mArtistModelList = new ArrayList<>();
     private Listener mListener;
     private Context mContext;
 
-    public ArtistRecyclerViewAdapter(Context context, List<Artist> artistList) {
+    public ArtistRecyclerViewAdapter(Context context, List<ArtistModel> artistModelList) {
         mContext = context;
-        mArtistList.addAll(artistList);
+        mArtistModelList.addAll(artistModelList);
     }
 
     public interface Listener {
@@ -49,29 +48,29 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CardView cardView = holder.mCardView;
-        //holder.mNameTextView.setText(mArtistList.get(position).getName());
+        //holder.mNameTextView.setText(mArtistModelList.get(position).getName());
 
         TextView nameTextView = (TextView) cardView.findViewById(R.id.name_textview);
-        nameTextView.setText(mArtistList.get(position).getName());
+        nameTextView.setText(mArtistModelList.get(position).getName());
 
         TextView genresTextView = (TextView) cardView.findViewById(R.id.genres_textview);
-        genresTextView.setText(mArtistList.get(position).getGenresAsString());
+        genresTextView.setText(mArtistModelList.get(position).getGenresAsString());
 
         TextView albumsTextView = (TextView) cardView.findViewById(R.id.albums_textview);
         albumsTextView.setText(FormatStringHelper.getFormattedAlbums(
-                mArtistList.get(position).getAlbums()) + ", ");
+                mArtistModelList.get(position).getAlbums()) + ", ");
 
         TextView tracksTextView = (TextView) cardView.findViewById(R.id.tracks_textview);
         tracksTextView.setText(FormatStringHelper.getFormattedTracks(
-                        mArtistList.get(position).getTracks()));
-
+                        mArtistModelList.get(position).getTracks()));
 
         ImageView smallCoverImageView =
                 (ImageView) cardView.findViewById(R.id.smallcover_imageview);
 
+        //Загружаем и кэшируем изображение помощью Glide.
         Glide
                 .with(mContext)
-                .load(mArtistList.get(position).getSmallCover())
+                .load(mArtistModelList.get(position).getSmallCover())
                 .placeholder(R.drawable.placehoder_224_300)
                 .into(smallCoverImageView);
 
@@ -87,7 +86,7 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
 
     @Override
     public int getItemCount() {
-        return mArtistList.size();
+        return mArtistModelList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,13 +103,25 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
      * Метод заменяет данные в адаптере на переданные
      * @param list данные для размещения в адаптере
      */
-    public void updateAll(List<Artist> list) {
-        mArtistList.clear();
-        mArtistList.addAll(list);
+    public void updateAll(List<ArtistModel> list) {
+        mArtistModelList.clear();
+        mArtistModelList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void setFilter(List<ArtistModel> list) {
+        mArtistModelList = new ArrayList<>();
+        mArtistModelList.addAll(list);
         notifyDataSetChanged();
     }
 
     public Object getItem(int position) {
-        return mArtistList.get(position);
+        return mArtistModelList.get(position);
     }
+
+    public List<ArtistModel> getAll() {
+        return mArtistModelList;
+    }
+
+
 }

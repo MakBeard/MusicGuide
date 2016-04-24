@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:context="com.makbeard.musicguide.ArtistDetailActivity">
+        tools:context=".activities.ArtistDetailActivity">
 
         <ImageView
             android:id="@+id/bigcover_imageview"

@@ -1,4 +1,4 @@
-package com.makbeard.musicguide;
+package com.makbeard.musicguide.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,17 +9,24 @@ import android.os.AsyncTask;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.fondesa.recyclerviewdivider.RecyclerViewDivider;
-import com.makbeard.musicguide.model.Artist;
+import com.makbeard.musicguide.ArtistDatabaseHelper;
+import com.makbeard.musicguide.ArtistRecyclerViewAdapter;
+import com.makbeard.musicguide.ArtistsJsonParser;
+import com.makbeard.musicguide.R;
+import com.makbeard.musicguide.model.ArtistModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +38,22 @@ import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
  * Стартовая Activity категорий,
  * отвечающая за вывод списа артистов
  */
-public class ArtistCategoryActivity extends AppCompatActivity {
+public class ArtistCategoryActivity extends AppCompatActivity
+        implements SearchView.OnQueryTextListener{
 
     private static final String TAG = "ArtistCategoryActivity";
+    private ArtistRecyclerViewAdapter mDataAdapter;
+    private ArrayList<ArtistModel> mArtistModelList;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +62,10 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
         ArtistDatabaseHelper artistDatabaseHelper = ArtistDatabaseHelper.getInstance(this);
 
-        final List<Artist> artistList = new ArrayList<>();
+        mArtistModelList = new ArrayList<>();
 
-        final ArtistRecyclerViewAdapter dataAdapter =
-                new ArtistRecyclerViewAdapter(this, artistList);
+        mDataAdapter =
+                new ArtistRecyclerViewAdapter(this, mArtistModelList);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
 
@@ -64,8 +77,8 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: берём данные из базы");
 
             //Если в БД есть данные, заполняем ими adapter
-            List<Artist> databaseList = artistDatabaseHelper.getArtistsListFromDb();
-            dataAdapter.updateAll(databaseList);
+            List<ArtistModel> databaseList = artistDatabaseHelper.getArtistsListFromDb();
+            mDataAdapter.updateAll(databaseList);
 
         } else {
 
@@ -75,7 +88,7 @@ public class ArtistCategoryActivity extends AppCompatActivity {
                 Log.d(TAG, "onCreate: берём данные из парсера");
                 // TODO: 23.04.2016 Обработать медленный интернет
                 AdapterLoadingAsyncTask adapterLoadingAsyncTask =
-                        new AdapterLoadingAsyncTask(this, dataAdapter);
+                        new AdapterLoadingAsyncTask(this, mDataAdapter);
                 adapterLoadingAsyncTask.execute();
 
             } else {
@@ -97,18 +110,18 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         }
 
 
-        dataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
+        mDataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
             @Override
             public void onClick(int position) {
                 Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
-                Artist clickedElement = (Artist) dataAdapter.getItem(position);
+                ArtistModel clickedElement = (ArtistModel) mDataAdapter.getItem(position);
 
-                intent.putExtra(Artist.NAME, clickedElement.getName());
-                intent.putExtra(Artist.GENRES, clickedElement.getGenresAsString());
-                intent.putExtra(Artist.ALBUMS, clickedElement.getAlbums());
-                intent.putExtra(Artist.TRACKS, clickedElement.getTracks());
-                intent.putExtra(Artist.DESCRIPTION, clickedElement.getDescription());
-                intent.putExtra(Artist.BIGCOVER, clickedElement.getBigCover());
+                intent.putExtra(ArtistModel.NAME, clickedElement.getName());
+                intent.putExtra(ArtistModel.GENRES, clickedElement.getGenresAsString());
+                intent.putExtra(ArtistModel.ALBUMS, clickedElement.getAlbums());
+                intent.putExtra(ArtistModel.TRACKS, clickedElement.getTracks());
+                intent.putExtra(ArtistModel.DESCRIPTION, clickedElement.getDescription());
+                intent.putExtra(ArtistModel.BIGCOVER, clickedElement.getBigCover());
 
                 startActivity(intent);
             }
@@ -129,10 +142,10 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
             //Оборачиваем адаптер с данными в адаптер анимации
             final ScaleInAnimationAdapter animationAdapter =
-                    new ScaleInAnimationAdapter(dataAdapter);
+                    new ScaleInAnimationAdapter(mDataAdapter);
 
             //В случае изменения данных обновляем адаптер анимации
-            dataAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            mDataAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
                 public void onChanged() {
                     super.onChanged();
@@ -143,7 +156,6 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             animationAdapter.setInterpolator(new FastOutLinearInInterpolator());
             animationAdapter.setDuration(500);
 
-            // TODO: 24.04.2016 Вернуть animationAdapter
             recyclerView.setAdapter(animationAdapter);
             recyclerView.setLayoutManager(linearLayoutManager);
         } else {
@@ -163,10 +175,39 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        // TODO: 24.04.2016 Добавить фильтрацию
+        /*
+        List<ArtistModel> filteredModelList = filter(mDataAdapter.getAll(), query);
+        Log.d(TAG, "onQueryTextChange: mDataAdapter " + mDataAdapter.getAll().size());
+        mDataAdapter.setFilter(filteredModelList);
+        */
+        return true;
+    }
+
+    private List<ArtistModel> filter(List<ArtistModel> list, String query) {
+        query = query.toLowerCase();
+
+        final List<ArtistModel> filteredModelList = new ArrayList<>();
+        for (ArtistModel model : list) {
+            final String text = model.getName().toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+    }
+
     /**
      * Класс для вызова загрузки и сохранения данных в отдельном потоке
      */
-    private class AdapterLoadingAsyncTask extends AsyncTask<Void, Integer, List<Artist>> {
+    private class AdapterLoadingAsyncTask extends AsyncTask<Void, Integer, List<ArtistModel>> {
 
         private Context mContext;
         private ArtistRecyclerViewAdapter mAdapter;
@@ -185,11 +226,11 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         }
 
         @Override
-        protected List<Artist> doInBackground(Void... params) {
+        protected List<ArtistModel> doInBackground(Void... params) {
             ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser(mContext);
 
             // TODO: 24.04.2016 Обрабоать SockedTimeoutException
-            final List<Artist> resultList = artistsJsonParser.getArtistsList();
+            final List<ArtistModel> resultList = artistsJsonParser.getArtistsList();
 
             //Запускаем сохранение в БД в отдельном потоке
             new Thread(new Runnable() {
@@ -206,7 +247,7 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Artist> resultList) {
+        protected void onPostExecute(List<ArtistModel> resultList) {
             super.onPostExecute(resultList);
             mIndicator.setVisibility(View.GONE);
             mAdapter.updateAll(resultList);

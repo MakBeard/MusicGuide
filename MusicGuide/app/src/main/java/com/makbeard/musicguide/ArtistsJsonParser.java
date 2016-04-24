@@ -1,26 +1,22 @@
 package com.makbeard.musicguide;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.makbeard.musicguide.model.Artist;
+import com.makbeard.musicguide.model.ArtistModel;
 
 import java.io.IOException;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Класс производит парсинг JSON-ссылки и сохраняет значения в виде объектов Artist
+ * Класс производит парсинг JSON-ссылки и сохраняет значения в виде объектов ArtistModel
  */
 public class ArtistsJsonParser {
 
@@ -50,27 +46,13 @@ public class ArtistsJsonParser {
     /**
      * Метод возвращает список артистов
      */
-    public List<Artist> getArtistsList() {
+    public List<ArtistModel> getArtistsList() {
 
         //Запускаем обработку JSON в отдельном потоке
-        Call<List<Artist>> call = yandexArtistApi.getArtistsList();
+        Call<List<ArtistModel>> call = yandexArtistApi.getArtistsList();
         try {
-            final Response<List<Artist>> response = call.execute();
+            final Response<List<ArtistModel>> response = call.execute();
             if (response.isSuccessful()) {
-
-                /*
-                // TODO: 24.04.2016 Вынести ArtistCategory Activity
-                //Запускаем сохранение в БД в отдельном потоке
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ArtistDatabaseHelper artistDatabaseHelper =
-                                ArtistDatabaseHelper.getInstance(mContext);
-                        artistDatabaseHelper.insertArtists(response.body());
-                    }
-                }).start();
-                */
-
                 return response.body();
             }
         } catch (IOException e) {
