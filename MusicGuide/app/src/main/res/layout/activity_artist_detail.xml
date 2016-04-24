@@ -81,6 +81,7 @@
             android:paddingTop="8dp"
             android:paddingLeft="@dimen/text_padding"
             android:paddingRight="@dimen/text_padding"
+            android:layout_marginBottom="@dimen/vertical_padding"
             android:layout_below="@id/biography_title_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:lineSpacingMultiplier="1.4"

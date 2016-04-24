@@ -87,7 +87,6 @@ public class ArtistCategoryActivity extends AppCompatActivity
             if (isOnline()) {
                 //Если есть интернет парсим JSON, обновляем adapter и сохраняем в БД
 
-                // TODO: 23.04.2016 Обработать медленный интернет
                 AdapterLoadingAsyncTask adapterLoadingAsyncTask =
                         new AdapterLoadingAsyncTask(this, mDataAdapter);
                 adapterLoadingAsyncTask.execute();
@@ -229,7 +228,6 @@ public class ArtistCategoryActivity extends AppCompatActivity
         protected List<ArtistModel> doInBackground(Void... params) {
             ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser();
 
-            // TODO: 24.04.2016 Обрабоать SockedTimeoutException
             final List<ArtistModel> resultList = artistsJsonParser.getArtistsList();
 
             //Запускаем сохранение в БД в отдельном потоке

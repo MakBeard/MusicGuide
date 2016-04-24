@@ -47,7 +47,6 @@ public class ArtistsJsonParser {
                 return response.body();
             }
         } catch (IOException e) {
-            // TODO: 22.04.2016 Обработать IOException
             e.printStackTrace();
             return null;
         }

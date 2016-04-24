@@ -50,17 +50,16 @@ public class ArtistDetailActivity extends AppCompatActivity {
         }
 
         TextView descriptionTextView = (TextView) findViewById(R.id.description_detail_textview);
+        Log.d("TEXT", "onCreate: " + artistDescription.length());
         if (descriptionTextView != null) {
-            if (artistDescription.length() > 400) {
-                descriptionTextView.setEms(30);
-                Log.d("TEXT", "onCreate: " + artistDescription.length());
+            if (artistDescription.length() > 300) {
+                descriptionTextView.setEms(35);
             }
             descriptionTextView.setText(artistDescription);
         }
 
         ImageView bigCoverImageView = (ImageView) findViewById(R.id.bigcover_imageview);
 
-        // TODO: 22.04.2016 Изменить размер изображения
         //Загружаем и кэшируем изображение c помощью Glide
         if (bigCoverImageView != null) {
             Glide
