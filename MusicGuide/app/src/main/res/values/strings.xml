@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">MusicGuide</string>
+    <string name="app_name">Music Guide</string>
     <string name="singers">Исполнители</string>
     <string name="biography">Биография</string>
+    <string name="check">Проверить</string>
+    <string name="no_internet_connection">Нет подключения к интернету</string>
+    <string name="settings">Настройки</string>
 </resources>

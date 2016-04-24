@@ -113,7 +113,6 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
         return artistsList;
     }
 
-    // TODO: 22.04.2016 Разбить на 2 запроса: categoryQuery и detailQuery
     /**
      * Метод возвращает курсор со всеми полями из БД
      * @return cursor

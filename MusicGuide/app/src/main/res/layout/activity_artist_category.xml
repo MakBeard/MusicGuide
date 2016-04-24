@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/artists_recycler"
-    android:scrollbars="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent">
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/avloadingindicatorview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:indicator="BallScaleRippleMultiple"
+        app:indicator_color="@color/colorMaterialGrey"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/artists_recycler"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
