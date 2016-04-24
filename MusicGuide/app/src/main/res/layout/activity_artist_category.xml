@@ -9,9 +9,9 @@
         android:id="@+id/avloadingindicatorview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         app:indicator="BallScaleRippleMultiple"
-        app:indicator_color="@color/colorMaterialGrey"/>
+        app:indicator_color="@color/cardview_dark_background"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/artists_recycler"

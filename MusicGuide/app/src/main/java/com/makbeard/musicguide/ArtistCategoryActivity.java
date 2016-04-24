@@ -48,7 +48,6 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_artist_category);
 
         ArtistDatabaseHelper artistDatabaseHelper = ArtistDatabaseHelper.getInstance(this);
-        Cursor cursor = artistDatabaseHelper.fullDataQuery();
 
         final List<Artist> artistList = new ArrayList<>();
 
@@ -56,6 +55,9 @@ public class ArtistCategoryActivity extends AppCompatActivity {
                 new ArtistRecyclerViewAdapter(this, artistList);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
+
+        //Запрашиваем все данные из БД
+        Cursor cursor = artistDatabaseHelper.fullDataQuery();
 
         //Если cursor.moveToFirst() true, обрабатываем данные из БД. Иначе заполняем БД
         if (cursor.moveToFirst()) {
@@ -189,7 +191,6 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             // TODO: 24.04.2016 Обрабоать SockedTimeoutException
             final List<Artist> resultList = artistsJsonParser.getArtistsList();
 
-            /*
             //Запускаем сохранение в БД в отдельном потоке
             new Thread(new Runnable() {
                 @Override
@@ -199,7 +200,7 @@ public class ArtistCategoryActivity extends AppCompatActivity {
                     artistDatabaseHelper.insertArtists(resultList);
                 }
             }).start();
-            */
+
 
             return resultList;
         }
