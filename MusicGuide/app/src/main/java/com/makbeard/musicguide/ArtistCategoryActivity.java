@@ -51,6 +51,7 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             //Если в БД есть данные, заполняем ими artistList
             List<Artist> databaseList = artistDatabaseHelper.getArtistsListFromDb();
             dataAdapter.updateAll(databaseList);
+            artistList.addAll(databaseList);
 
         } else {
 
@@ -73,27 +74,24 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
 
-        /*
-        //Создаём свой Adapter для RecyclerView
-        ArtistRecyclerViewAdapter dataAdapter =
-                new ArtistRecyclerViewAdapter(this, artistList);
-        */
-        // TODO: 24.04.2016 Перепривязать Listener
-        if (dataAdapter.getItemCount() > 0) {
-            dataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
-                @Override
-                public void onClick(int position) {
-                    Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
+        // TODO: 24.04.2016 Изменить алгоритм, artistList м/б 0 в начале
+        dataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
+            @Override
+            public void onClick(int position) {
+                Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
+
+                if (artistList.size() > 0) {
                     intent.putExtra(Artist.NAME, artistList.get(position).getName());
                     intent.putExtra(Artist.GENRES, artistList.get(position).getGenresAsString());
                     intent.putExtra(Artist.ALBUMS, artistList.get(position).getAlbums());
                     intent.putExtra(Artist.TRACKS, artistList.get(position).getTracks());
                     intent.putExtra(Artist.DESCRIPTION, artistList.get(position).getDescription());
                     intent.putExtra(Artist.BIGCOVER, artistList.get(position).getBigCover());
-                    startActivity(intent);
                 }
-            });
-        }
+
+                startActivity(intent);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
@@ -101,22 +99,31 @@ public class ArtistCategoryActivity extends AppCompatActivity {
         RecyclerViewDivider divider = new RecyclerViewDivider(
                 getResources().getColor(R.color.colorMaterialGrey), 1);
 
+
         if (recyclerView != null) {
 
             recyclerView.addItemDecoration(divider);
             //Добавляем анимацию появления элемента
             recyclerView.setItemAnimator(new FadeInAnimator());
 
-            //Задаём анимацию для адаптера
-
-            ScaleInAnimationAdapter animationAdapter =
+            //Оборачиваем адаптер с данными в адаптер анимации
+            final ScaleInAnimationAdapter animationAdapter =
                     new ScaleInAnimationAdapter(dataAdapter);
+
+            //В случае изменения данных обновляем адаптер анимации
+            dataAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+                    animationAdapter.notifyDataSetChanged();
+                }
+            });
 
             animationAdapter.setInterpolator(new FastOutLinearInInterpolator());
             animationAdapter.setDuration(500);
 
             // TODO: 24.04.2016 Вернуть animationAdapter
-            recyclerView.setAdapter(dataAdapter);
+            recyclerView.setAdapter(animationAdapter);
             recyclerView.setLayoutManager(linearLayoutManager);
         } else {
             Log.e(TAG, "onCreate: RECYCLER == NULL!!!");
@@ -154,7 +161,7 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             // TODO: 24.04.2016 Обрабоать SockedTimeoutException
 
             final List<Artist> resultList = artistsJsonParser.getArtistsList();
-
+/*
             //Запускаем сохранение в БД в отдельном потоке
             new Thread(new Runnable() {
                 @Override
@@ -164,15 +171,15 @@ public class ArtistCategoryActivity extends AppCompatActivity {
                     artistDatabaseHelper.insertArtists(resultList);
                 }
             }).start();
-
+*/
             return resultList;
         }
 
         @Override
-        protected void onPostExecute(List<Artist> artistList) {
-            super.onPostExecute(artistList);
-            Log.d(TAG, "onPostExecute: PARSER RESULT " + artistList.size());
-            mAdapter.updateAll(artistList);
+        protected void onPostExecute(List<Artist> resultList) {
+            super.onPostExecute(resultList);
+            Log.d(TAG, "onPostExecute: PARSER RESULT " + resultList.size());
+            mAdapter.updateAll(resultList);
         }
     }
 }
