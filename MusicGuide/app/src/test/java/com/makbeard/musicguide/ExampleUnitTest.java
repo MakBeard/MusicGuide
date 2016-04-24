@@ -23,6 +23,7 @@ public class ExampleUnitTest {
         assertTrue(FormatStringHelper.getFormattedTracks(2).equals("2 песни"));
         assertTrue(FormatStringHelper.getFormattedTracks(5).equals("5 песен"));
         assertTrue(FormatStringHelper.getFormattedTracks(20).equals("20 песен"));
+        assertTrue(FormatStringHelper.getFormattedTracks(23).equals("23 песни"));
         assertTrue(FormatStringHelper.getFormattedTracks(100).equals("100 песен"));
     }
 

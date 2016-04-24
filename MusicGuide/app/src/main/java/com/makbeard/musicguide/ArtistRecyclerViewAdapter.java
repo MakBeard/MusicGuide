@@ -3,6 +3,7 @@ package com.makbeard.musicguide;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,5 +98,18 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
             mCardView = cardView;
             mNameTextView = (TextView) cardView.findViewById(R.id.name_textview);
         }
+    }
+
+    public void updateAll(List<Artist> list) {
+        /*
+        //если точно такие же элементы уже есть в списке их нет смысла добавлять
+        if (mArtistList.containsAll(list)) {
+            return;
+        }
+        */
+        mArtistList.clear();
+        mArtistList.addAll(list);
+        notifyDataSetChanged();
+
     }
 }

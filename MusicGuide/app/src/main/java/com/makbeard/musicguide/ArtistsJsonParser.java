@@ -57,6 +57,9 @@ public class ArtistsJsonParser {
         try {
             final Response<List<Artist>> response = call.execute();
             if (response.isSuccessful()) {
+
+                /*
+                // TODO: 24.04.2016 Вынести ArtistCategory Activity
                 //Запускаем сохранение в БД в отдельном потоке
                 new Thread(new Runnable() {
                     @Override
@@ -66,6 +69,8 @@ public class ArtistsJsonParser {
                         artistDatabaseHelper.insertArtists(response.body());
                     }
                 }).start();
+                */
+
                 return response.body();
             }
         } catch (IOException e) {
@@ -75,25 +80,4 @@ public class ArtistsJsonParser {
         }
         return null;
     }
-        // TODO: 22.04.2016 Переделать на синхронный вызов
-        /*
-        call.enqueue(new Callback<List<Artist>>() {
-            @Override
-            public void onResponse(Call<List<Artist>> call, Response<List<Artist>> response) {
-               if (response.isSuccessful()) {
-                   // TODO: 22.04.2016 Передаём в UI thread List
-                   //Сохраняем в полученный List в БД
-                   ArtistDatabaseHelper artistDatabaseHelper =
-                           ArtistDatabaseHelper.getInstance(mContext);
-                   artistDatabaseHelper.insertArtists(response.body());
-               }
-            }
-
-            @Override
-            public void onFailure(Call<List<Artist>> call, Throwable t) {
-            // TODO: 20.04.2016 Обработать ошибку
-            }
-        });
-        */
-
 }

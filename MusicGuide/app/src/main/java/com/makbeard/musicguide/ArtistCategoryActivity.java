@@ -2,27 +2,16 @@ package com.makbeard.musicguide;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.PathInterpolator;
 import android.widget.Toast;
 
 import com.fondesa.recyclerviewdivider.RecyclerViewDivider;
@@ -30,15 +19,8 @@ import com.makbeard.musicguide.model.Artist;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
-import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.adapters.AnimationAdapter;
 import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 /**
@@ -59,54 +41,59 @@ public class ArtistCategoryActivity extends AppCompatActivity {
 
         final List<Artist> artistList = new ArrayList<>();
 
+        final ArtistRecyclerViewAdapter dataAdapter =
+                new ArtistRecyclerViewAdapter(this, artistList);
+
         //Если cursor.moveToFirst() true, обрабатываем данные из БД. Иначе заполняем БД
         if (cursor.moveToFirst()) {
             Log.d(TAG, "onCreate: берём данные из базы");
-            //Если в БД есть данные, заполняем ими artistList
-            artistList.addAll(artistDatabaseHelper.getArtistsListFromDb());
-        } else {
-            //Если база пустая
 
+            //Если в БД есть данные, заполняем ими artistList
+            List<Artist> databaseList = artistDatabaseHelper.getArtistsListFromDb();
+            dataAdapter.updateAll(databaseList);
+
+        } else {
+
+            //Если база пустая
             if (isOnline()) {
-                //Если есть интернет
+                //Если есть интернет парсим JSON, обновляем адаптер и сохраняем в БД
 
                 Log.d(TAG, "onCreate: берём данные из парсера");
                 // TODO: 23.04.2016 Обработать медленный интернет
-                DataLoadingAsyncTask dataLoadingAsyncTask = new DataLoadingAsyncTask(this);
-                try {
-                    // TODO: 23.04.2016 Переделать ожидание возварщениея
-                    //Попробовать вынести из метода OnCreate в OnStart
-                    artistList.addAll(dataLoadingAsyncTask.execute().get());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                AdapterLoadingAsyncTask adapterLoadingAsyncTask =
+                        new AdapterLoadingAsyncTask(this, dataAdapter);
+                adapterLoadingAsyncTask.execute();
+
             } else {
-                // TODO: 23.04.2016 Обработать отсутствие интернета
+                // TODO: 23.04.2016 Обработать отсутствие интернета при пустой базе
                 Toast.makeText(this, "Для заполнения БД нужен интернет...", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onCreate: Нет инета");
             }
         }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
+
+        /*
         //Создаём свой Adapter для RecyclerView
         ArtistRecyclerViewAdapter dataAdapter =
                 new ArtistRecyclerViewAdapter(this, artistList);
-
-        dataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
-            @Override
-            public void onClick(int position) {
-                Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
-                intent.putExtra(Artist.NAME, artistList.get(position).getName());
-                intent.putExtra(Artist.GENRES, artistList.get(position).getGenresAsString());
-                intent.putExtra(Artist.ALBUMS, artistList.get(position).getAlbums());
-                intent.putExtra(Artist.TRACKS, artistList.get(position).getTracks());
-                intent.putExtra(Artist.DESCRIPTION, artistList.get(position).getDescription());
-                intent.putExtra(Artist.BIGCOVER, artistList.get(position).getBigCover());
-                startActivity(intent);
-            }
-        });
+        */
+        // TODO: 24.04.2016 Перепривязать Listener
+        if (dataAdapter.getItemCount() > 0) {
+            dataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
+                @Override
+                public void onClick(int position) {
+                    Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
+                    intent.putExtra(Artist.NAME, artistList.get(position).getName());
+                    intent.putExtra(Artist.GENRES, artistList.get(position).getGenresAsString());
+                    intent.putExtra(Artist.ALBUMS, artistList.get(position).getAlbums());
+                    intent.putExtra(Artist.TRACKS, artistList.get(position).getTracks());
+                    intent.putExtra(Artist.DESCRIPTION, artistList.get(position).getDescription());
+                    intent.putExtra(Artist.BIGCOVER, artistList.get(position).getBigCover());
+                    startActivity(intent);
+                }
+            });
+        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
@@ -121,13 +108,15 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             recyclerView.setItemAnimator(new FadeInAnimator());
 
             //Задаём анимацию для адаптера
+
             ScaleInAnimationAdapter animationAdapter =
                     new ScaleInAnimationAdapter(dataAdapter);
 
             animationAdapter.setInterpolator(new FastOutLinearInInterpolator());
             animationAdapter.setDuration(500);
 
-            recyclerView.setAdapter(animationAdapter);
+            // TODO: 24.04.2016 Вернуть animationAdapter
+            recyclerView.setAdapter(dataAdapter);
             recyclerView.setLayoutManager(linearLayoutManager);
         } else {
             Log.e(TAG, "onCreate: RECYCLER == NULL!!!");
@@ -149,23 +138,41 @@ public class ArtistCategoryActivity extends AppCompatActivity {
     /**
      * Класс для вызова загрузки данных в отдельном потоке
      */
-    private class DataLoadingAsyncTask extends AsyncTask<Void, Integer, List<Artist>> {
+    private class AdapterLoadingAsyncTask extends AsyncTask<Void, Integer, List<Artist>> {
 
         private Context mContext;
+        private ArtistRecyclerViewAdapter mAdapter;
 
-        public DataLoadingAsyncTask(Context context) {
+        public AdapterLoadingAsyncTask(Context context, ArtistRecyclerViewAdapter adapter) {
             mContext = context;
+            mAdapter = adapter;
         }
 
         @Override
         protected List<Artist> doInBackground(Void... params) {
             ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser(mContext);
-            return artistsJsonParser.getArtistsList();
+            // TODO: 24.04.2016 Обрабоать SockedTimeoutException
+
+            final List<Artist> resultList = artistsJsonParser.getArtistsList();
+
+            //Запускаем сохранение в БД в отдельном потоке
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ArtistDatabaseHelper artistDatabaseHelper =
+                            ArtistDatabaseHelper.getInstance(mContext);
+                    artistDatabaseHelper.insertArtists(resultList);
+                }
+            }).start();
+
+            return resultList;
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
+        protected void onPostExecute(List<Artist> artistList) {
+            super.onPostExecute(artistList);
+            Log.d(TAG, "onPostExecute: PARSER RESULT " + artistList.size());
+            mAdapter.updateAll(artistList);
         }
     }
 }
