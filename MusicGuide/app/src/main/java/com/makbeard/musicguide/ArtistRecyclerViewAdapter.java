@@ -100,16 +100,17 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         }
     }
 
+    /**
+     * Метод заменяет данные в адаптере на переданные
+     * @param list данные для размещения в адаптере
+     */
     public void updateAll(List<Artist> list) {
-        /*
-        //если точно такие же элементы уже есть в списке их нет смысла добавлять
-        if (mArtistList.containsAll(list)) {
-            return;
-        }
-        */
         mArtistList.clear();
         mArtistList.addAll(list);
         notifyDataSetChanged();
+    }
 
+    public Object getItem(int position) {
+        return mArtistList.get(position);
     }
 }

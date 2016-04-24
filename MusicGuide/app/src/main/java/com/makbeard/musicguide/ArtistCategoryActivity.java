@@ -79,15 +79,16 @@ public class ArtistCategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(int position) {
                 Intent intent = new Intent(ArtistCategoryActivity.this, ArtistDetailActivity.class);
+                Artist clickedElement = (Artist) dataAdapter.getItem(position);
 
-                if (artistList.size() > 0) {
-                    intent.putExtra(Artist.NAME, artistList.get(position).getName());
-                    intent.putExtra(Artist.GENRES, artistList.get(position).getGenresAsString());
-                    intent.putExtra(Artist.ALBUMS, artistList.get(position).getAlbums());
-                    intent.putExtra(Artist.TRACKS, artistList.get(position).getTracks());
-                    intent.putExtra(Artist.DESCRIPTION, artistList.get(position).getDescription());
-                    intent.putExtra(Artist.BIGCOVER, artistList.get(position).getBigCover());
-                }
+                Log.d(TAG, "onClick: " + clickedElement.getName());
+
+                intent.putExtra(Artist.NAME, clickedElement.getName());
+                intent.putExtra(Artist.GENRES, clickedElement.getGenresAsString());
+                intent.putExtra(Artist.ALBUMS, clickedElement.getAlbums());
+                intent.putExtra(Artist.TRACKS, clickedElement.getTracks());
+                intent.putExtra(Artist.DESCRIPTION, clickedElement.getDescription());
+                intent.putExtra(Artist.BIGCOVER, clickedElement.getBigCover());
 
                 startActivity(intent);
             }
