@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecyclerViewAdapter.ViewHolder> {
 
-    private static final String TAG = "RVAdapter" ;
     private List<ArtistModel> mArtistModelList = new ArrayList<>();
     private Listener mListener;
     private Context mContext;
@@ -46,9 +45,8 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         CardView cardView = holder.mCardView;
-        //holder.mNameTextView.setText(mArtistModelList.get(position).getName());
 
         TextView nameTextView = (TextView) cardView.findViewById(R.id.name_textview);
         nameTextView.setText(mArtistModelList.get(position).getName());
@@ -57,8 +55,9 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         genresTextView.setText(mArtistModelList.get(position).getGenresAsString());
 
         TextView albumsTextView = (TextView) cardView.findViewById(R.id.albums_textview);
-        albumsTextView.setText(FormatStringHelper.getFormattedAlbums(
-                mArtistModelList.get(position).getAlbums()) + ", ");
+        String stringAlbums = FormatStringHelper.getFormattedAlbums(
+                mArtistModelList.get(position).getAlbums()) + ", ";
+        albumsTextView.setText(stringAlbums);
 
         TextView tracksTextView = (TextView) cardView.findViewById(R.id.tracks_textview);
         tracksTextView.setText(FormatStringHelper.getFormattedTracks(
@@ -67,7 +66,7 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         ImageView smallCoverImageView =
                 (ImageView) cardView.findViewById(R.id.smallcover_imageview);
 
-        //Загружаем и кэшируем изображение помощью Glide.
+        //Загружаем и кэшируем изображение c помощью Glide
         Glide
                 .with(mContext)
                 .load(mArtistModelList.get(position).getSmallCover())
@@ -78,7 +77,7 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onClick(position);
+                    mListener.onClick(holder.getAdapterPosition());
                 }
             }
         });
@@ -89,9 +88,13 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         return mArtistModelList.size();
     }
 
+    /**
+     * Класс реализация viewholder
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private CardView mCardView;
         TextView mNameTextView;
+
         public ViewHolder(CardView cardView) {
             super(cardView);
             mCardView = cardView;
@@ -116,7 +119,7 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
     public void animateTo(List<ArtistModel> models) {
         applyAndAnimateRemovals(models);
         applyAndAnimateAdditions(models);
-        //applyAndAnimateMovedItems(models);
+        applyAndAnimateMovedItems(models);
     }
 
     private void applyAndAnimateRemovals(List<ArtistModel> newModels) {
@@ -150,7 +153,6 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
     public ArtistModel removeItem(int position) {
         final ArtistModel model = mArtistModelList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mArtistModelList.size());
         notifyDataSetChanged();
         return model;
     }

@@ -15,43 +15,54 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true" />
 
         <TextView
             android:id="@+id/name_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingStart="@dimen/text_padding"
+            android:paddingEnd="@dimen/text_padding"
             android:layout_toRightOf="@id/smallcover_imageview"
+            android:layout_toEndOf="@id/smallcover_imageview"
             android:layout_alignTop="@id/smallcover_imageview"
-            android:text="NAME"/>
+            android:text="@string/name"/>
 
         <TextView
             android:id="@+id/genres_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
             android:layout_toRightOf="@id/smallcover_imageview"
+            android:layout_toEndOf="@id/smallcover_imageview"
             android:layout_below="@id/name_textview"
-            android:text="GENRES"/>
+            android:text="@string/genres"/>
 
         <TextView
             android:id="@+id/albums_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingStart="@dimen/text_padding"
             android:layout_toRightOf="@id/smallcover_imageview"
+            android:layout_toEndOf="@id/smallcover_imageview"
             android:layout_alignBottom="@id/smallcover_imageview"
-            android:text="ALBUMS"/>
+            android:text="@string/albums"/>
 
         <TextView
             android:id="@+id/tracks_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/albums_textview"
+            android:layout_toEndOf="@id/albums_textview"
+            android:paddingRight="@dimen/text_padding"
             android:layout_alignBottom="@id/smallcover_imageview"
-            android:text="TRACKS"/>
+            android:text="@string/tracks"/>
 
 
     </RelativeLayout>

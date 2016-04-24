@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +49,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        //Настраиваем кнопку поиска
         MenuItem itemSearch = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
         searchView.setOnQueryTextListener(this);
@@ -75,7 +75,6 @@ public class ArtistCategoryActivity extends AppCompatActivity
 
         //Если cursor.moveToFirst() true, обрабатываем данные из БД. Иначе заполняем БД
         if (cursor.moveToFirst()) {
-            Log.d(TAG, "onCreate: берём данные из базы");
 
             //Если в БД есть данные, заполняем ими adapter
             List<ArtistModel> databaseList = artistDatabaseHelper.getArtistsListFromDb();
@@ -87,7 +86,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
             //Если база пустая
             if (isOnline()) {
                 //Если есть интернет парсим JSON, обновляем adapter и сохраняем в БД
-                Log.d(TAG, "onCreate: берём данные из парсера");
+
                 // TODO: 23.04.2016 Обработать медленный интернет
                 AdapterLoadingAsyncTask adapterLoadingAsyncTask =
                         new AdapterLoadingAsyncTask(this, mDataAdapter);
@@ -182,7 +181,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextChange(String query) {
-        // TODO: 24.04.2016 Добавить фильтрацию
+        //Настаиваем механизм поиска
         List<ArtistModel> filteredModelList = filter(mArtistModelList, query);
         mDataAdapter.animateTo(filteredModelList);
         mRecyclerView.scrollToPosition(0);
@@ -219,13 +218,16 @@ public class ArtistCategoryActivity extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            //Делаем видимым индикатор
             mIndicator = findViewById(R.id.avloadingindicatorview);
-            mIndicator.setVisibility(View.VISIBLE);
+            if (mIndicator != null) {
+                mIndicator.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
         protected List<ArtistModel> doInBackground(Void... params) {
-            ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser(mContext);
+            ArtistsJsonParser artistsJsonParser = new ArtistsJsonParser();
 
             // TODO: 24.04.2016 Обрабоать SockedTimeoutException
             final List<ArtistModel> resultList = artistsJsonParser.getArtistsList();
@@ -247,8 +249,11 @@ public class ArtistCategoryActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(List<ArtistModel> resultList) {
             super.onPostExecute(resultList);
+            //Обновляем лист с данными
             mArtistModelList.addAll(resultList);
+            //Прячем индикатор
             mIndicator.setVisibility(View.GONE);
+            //Обновляем адаптер
             mAdapter.updateAll(resultList);
         }
     }

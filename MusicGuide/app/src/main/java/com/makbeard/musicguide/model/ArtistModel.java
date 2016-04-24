@@ -63,7 +63,7 @@ public class ArtistModel {
     }
 
     /**
-     * Конструктор для правильной работы Retrofit
+     * Конструктор, основанный на структуре JSON для правильной работы Retrofit
      * @param name
      * @param id
      * @param genres
@@ -86,7 +86,7 @@ public class ArtistModel {
     }
 
     /**
-     * Конструткор
+     * Конструткор для удобной работы с ArtistModel
      * @param name
      * @param id
      * @param genres

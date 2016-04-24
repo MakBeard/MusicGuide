@@ -6,4 +6,11 @@
     <string name="no_internet_connection">Нет подключения к интернету</string>
     <string name="settings">Настройки</string>
     <string name="action_search">Поиск</string>
+    <string name="u00b7">·</string>
+    <string name="artist_image">Изображение артиста</string>
+    <string name="genres">Genres</string>
+    <string name="albums">Albums</string>
+    <string name="tracks">Tracks</string>
+    <string name="description">Description</string>
+    <string name="name">Name</string>
 </resources>

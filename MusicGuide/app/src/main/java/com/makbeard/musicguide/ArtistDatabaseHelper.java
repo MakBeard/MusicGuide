@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Класс-помощник для доступа к SQLite базе
- * содержащей данные об артистах
+ * Singleton класс-помощник для доступа к SQLite базе
  */
 public class ArtistDatabaseHelper extends SQLiteOpenHelper {
 
@@ -87,7 +86,7 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
         int linkIdx =        cursor.getColumnIndex(KEY_LINK);
         int descriptionIdx = cursor.getColumnIndex(KEY_DESCRIPTION);
         int smallCoverIdx =  cursor.getColumnIndex(KEY_SMALLCOVER);
-        int bigCiverIdx =    cursor.getColumnIndex(KEY_BIGCOVER);
+        int bigCоverIdx =    cursor.getColumnIndex(KEY_BIGCOVER);
 
         if (cursor.moveToFirst()) {
 
@@ -100,7 +99,7 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
                 String link = cursor.getString(linkIdx);
                 String description = cursor.getString(descriptionIdx);
                 String smallCover = cursor.getString(smallCoverIdx);
-                String bigCover = cursor.getString(bigCiverIdx);
+                String bigCover = cursor.getString(bigCоverIdx);
 
                 artistsList.add(new ArtistModel(name, jsonId, genres,
                         tracks, albums, link,
@@ -158,7 +157,6 @@ public class ArtistDatabaseHelper extends SQLiteOpenHelper {
                 }
 
                 cv.put(KEY_GENRES, genresSb.toString());
-                //Log.d(TAG, "insertArtists: " + artistModel.getName());
                 db.insert(ARTISTS_TABLE, null, cv);
             }
             db.setTransactionSuccessful();

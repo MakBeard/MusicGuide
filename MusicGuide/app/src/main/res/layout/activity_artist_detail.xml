@@ -22,53 +22,68 @@
             android:id="@+id/genres_detail_tetview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/vertical_padding"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingStart="@dimen/text_padding"
+            android:paddingEnd="@dimen/text_padding"
             android:layout_below="@id/bigcover_imageview"
-            android:text="GENRES"/>
+            android:text="@string/genres"/>
 
         <TextView
             android:id="@+id/albums_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/vertical_padding"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingStart="@dimen/text_padding"
+            android:paddingEnd="@dimen/text_padding"
             android:layout_below="@id/genres_detail_tetview"
-            android:text="ALBUMS"/>
+            android:text="@string/albums"/>
 
         <TextView
             android:id="@+id/dot_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/text_padding"
+            android:paddingTop="@dimen/vertical_padding"
             android:layout_toRightOf="@id/albums_detail_textview"
+            android:layout_toEndOf="@id/albums_detail_textview"
             android:layout_alignTop="@id/albums_detail_textview"
-            android:text="\u00B7"/>
+            android:text="@string/u00b7"/>
 
         <TextView
             android:id="@+id/tracks_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/vertical_padding"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
             android:layout_alignTop="@id/albums_detail_textview"
             android:layout_toRightOf="@id/dot_detail_textview"
-            android:text="TRACKS"/>
+            android:layout_toEndOf="@id/dot_detail_textview"
+            android:text="@string/tracks"/>
 
         <TextView
             android:id="@+id/biography_title_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/text_padding"
+            android:paddingTop="@dimen/vertical_padding"
+            android:paddingStart="@dimen/text_padding"
+            android:paddingEnd="@dimen/text_padding"
             android:layout_below="@id/albums_detail_textview"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:text="@string/biography"/>
 
         <TextView
             android:id="@+id/description_detail_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:paddingLeft="@dimen/text_padding"
             android:paddingRight="@dimen/text_padding"
             android:layout_below="@id/biography_title_textview"
-            android:text="DETAIL"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:text="@string/description"/>
 
     </RelativeLayout>
 </ScrollView>
