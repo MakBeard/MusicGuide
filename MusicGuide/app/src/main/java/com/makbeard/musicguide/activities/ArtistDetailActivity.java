@@ -37,8 +37,6 @@ public class ArtistDetailActivity extends AppCompatActivity {
         TextView albumsTextView = (TextView) findViewById(R.id.albums_detail_textview);
         albumsTextView.setText(FormatStringHelper.getFormattedAlbums(artistAlbums));
 
-        //"\u00B7"
-
         TextView tracksTextView = (TextView) findViewById(R.id.tracks_detail_textview);
         tracksTextView.setText(FormatStringHelper.getFormattedTracks(artistTracks));
 

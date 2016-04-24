@@ -109,19 +109,63 @@ public class ArtistRecyclerViewAdapter extends RecyclerView.Adapter<ArtistRecycl
         notifyDataSetChanged();
     }
 
-    public void setFilter(List<ArtistModel> list) {
-        mArtistModelList = new ArrayList<>();
-        mArtistModelList.addAll(list);
-        notifyDataSetChanged();
-    }
-
     public Object getItem(int position) {
         return mArtistModelList.get(position);
     }
 
-    public List<ArtistModel> getAll() {
-        return mArtistModelList;
+    public void animateTo(List<ArtistModel> models) {
+        applyAndAnimateRemovals(models);
+        applyAndAnimateAdditions(models);
+        //applyAndAnimateMovedItems(models);
     }
 
+    private void applyAndAnimateRemovals(List<ArtistModel> newModels) {
+        for (int i = mArtistModelList.size() - 1; i >= 0; i--) {
+            final ArtistModel model = mArtistModelList.get(i);
+            if (!newModels.contains(model)) {
+                removeItem(i);
+            }
+        }
+    }
+
+    private void applyAndAnimateAdditions(List<ArtistModel> newModels) {
+        for (int i = 0, count = newModels.size(); i < count; i++) {
+            final ArtistModel model = newModels.get(i);
+            if (!mArtistModelList.contains(model)) {
+                addItem(i, model);
+            }
+        }
+    }
+
+    private void applyAndAnimateMovedItems(List<ArtistModel> newModels) {
+        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
+            final ArtistModel model = newModels.get(toPosition);
+            final int fromPosition = mArtistModelList.indexOf(model);
+            if (fromPosition >= 0 && fromPosition != toPosition) {
+                moveItem(fromPosition, toPosition);
+            }
+        }
+    }
+
+    public ArtistModel removeItem(int position) {
+        final ArtistModel model = mArtistModelList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mArtistModelList.size());
+        notifyDataSetChanged();
+        return model;
+    }
+
+    public void addItem(int position, ArtistModel model) {
+        mArtistModelList.add(position, model);
+        notifyItemInserted(position);
+        notifyDataSetChanged();
+    }
+
+    public void moveItem(int fromPosition, int toPosition) {
+        final ArtistModel model = mArtistModelList.remove(fromPosition);
+        mArtistModelList.add(toPosition, model);
+        notifyItemMoved(fromPosition, toPosition);
+        notifyDataSetChanged();
+    }
 
 }

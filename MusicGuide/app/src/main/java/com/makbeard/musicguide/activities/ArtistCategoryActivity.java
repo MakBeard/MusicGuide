@@ -44,6 +44,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
     private static final String TAG = "ArtistCategoryActivity";
     private ArtistRecyclerViewAdapter mDataAdapter;
     private ArrayList<ArtistModel> mArtistModelList;
+    private RecyclerView mRecyclerView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,7 +68,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
         mDataAdapter =
                 new ArtistRecyclerViewAdapter(this, mArtistModelList);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
+        mRecyclerView = (RecyclerView) findViewById(R.id.artists_recycler);
 
         //Запрашиваем все данные из БД
         Cursor cursor = artistDatabaseHelper.fullDataQuery();
@@ -78,6 +79,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
 
             //Если в БД есть данные, заполняем ими adapter
             List<ArtistModel> databaseList = artistDatabaseHelper.getArtistsListFromDb();
+            mArtistModelList.addAll(databaseList);
             mDataAdapter.updateAll(databaseList);
 
         } else {
@@ -94,8 +96,9 @@ public class ArtistCategoryActivity extends AppCompatActivity
             } else {
                 //Если интернета нет и БД пустая
 
-                if (recyclerView != null) {
-                    Snackbar.make(recyclerView, R.string.no_internet_connection,
+                if (mRecyclerView != null) {
+                    //Выводим уведомление
+                    Snackbar.make(mRecyclerView, R.string.no_internet_connection,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.settings, new View.OnClickListener() {
                                 @Override
@@ -109,7 +112,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
             }
         }
 
-
+        //Создаём слушать для перехода в DetailActivity
         mDataAdapter.setListener(new ArtistRecyclerViewAdapter.Listener() {
             @Override
             public void onClick(int position) {
@@ -133,18 +136,18 @@ public class ArtistCategoryActivity extends AppCompatActivity
         RecyclerViewDivider divider = new RecyclerViewDivider(
                 ContextCompat.getColor(this, R.color.colorMaterialGrey), 1);
 
+        if (mRecyclerView != null) {
 
-        if (recyclerView != null) {
+            mRecyclerView.addItemDecoration(divider);
 
-            recyclerView.addItemDecoration(divider);
             //Добавляем анимацию появления элемента
-            recyclerView.setItemAnimator(new FadeInAnimator());
+            mRecyclerView.setItemAnimator(new FadeInAnimator());
 
             //Оборачиваем адаптер с данными в адаптер анимации
             final ScaleInAnimationAdapter animationAdapter =
                     new ScaleInAnimationAdapter(mDataAdapter);
 
-            //В случае изменения данных обновляем адаптер анимации
+            //В случае изменения адаптера данных обновляем адаптер анимации
             mDataAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
                 public void onChanged() {
@@ -156,12 +159,9 @@ public class ArtistCategoryActivity extends AppCompatActivity
             animationAdapter.setInterpolator(new FastOutLinearInInterpolator());
             animationAdapter.setDuration(500);
 
-            recyclerView.setAdapter(animationAdapter);
-            recyclerView.setLayoutManager(linearLayoutManager);
-        } else {
-            Log.d(TAG, "onCreate: RECYCLER == NULL!!!");
+            mRecyclerView.setAdapter(animationAdapter);
+            mRecyclerView.setLayoutManager(linearLayoutManager);
         }
-
     }
 
     /**
@@ -183,11 +183,9 @@ public class ArtistCategoryActivity extends AppCompatActivity
     @Override
     public boolean onQueryTextChange(String query) {
         // TODO: 24.04.2016 Добавить фильтрацию
-        /*
-        List<ArtistModel> filteredModelList = filter(mDataAdapter.getAll(), query);
-        Log.d(TAG, "onQueryTextChange: mDataAdapter " + mDataAdapter.getAll().size());
-        mDataAdapter.setFilter(filteredModelList);
-        */
+        List<ArtistModel> filteredModelList = filter(mArtistModelList, query);
+        mDataAdapter.animateTo(filteredModelList);
+        mRecyclerView.scrollToPosition(0);
         return true;
     }
 
@@ -249,6 +247,7 @@ public class ArtistCategoryActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(List<ArtistModel> resultList) {
             super.onPostExecute(resultList);
+            mArtistModelList.addAll(resultList);
             mIndicator.setVisibility(View.GONE);
             mAdapter.updateAll(resultList);
         }
