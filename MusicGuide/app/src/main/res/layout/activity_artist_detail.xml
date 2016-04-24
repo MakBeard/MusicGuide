@@ -83,6 +83,7 @@
             android:paddingRight="@dimen/text_padding"
             android:layout_below="@id/biography_title_textview"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:lineSpacingMultiplier="1.4"
             android:text="@string/description"/>
 
     </RelativeLayout>

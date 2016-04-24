@@ -3,6 +3,7 @@ package com.makbeard.musicguide.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,6 +51,10 @@ public class ArtistDetailActivity extends AppCompatActivity {
 
         TextView descriptionTextView = (TextView) findViewById(R.id.description_detail_textview);
         if (descriptionTextView != null) {
+            if (artistDescription.length() > 400) {
+                descriptionTextView.setEms(30);
+                Log.d("TEXT", "onCreate: " + artistDescription.length());
+            }
             descriptionTextView.setText(artistDescription);
         }
 
